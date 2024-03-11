@@ -77,16 +77,16 @@ This endpoint salts the received string and returns the salted string.
 }
 ```
 
-### 3. Check for Password Breaches
+### 3. Check for Password Strength
 
 #### Endpoint
 ```
-GET /breaches/<string:text>
+GET /strength/<string:text>
 ```
 
 #### Description
 This endpoint checks if the received string has been compromised in common password breaches. It performs several checks, including common passwords, uppercase and lowercase letters, digits, special characters, and minimum length.
-
+r
 #### Request
 - Method: `GET`
 - URL Parameters:
