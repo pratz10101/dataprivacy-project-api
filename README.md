@@ -29,62 +29,98 @@ You can also use docker to run this project with the Dockerfile added
 
 ## API Documentation
 
-### `/hash/<string:text>` (GET)
-This endpoint takes a text value in the URL path and returns the SHA-1 hash of the provided string.
+The base URL for this API is `http://localhost:5000/` when running locally. Please replace it with the appropriate URL when deploying the API.
 
-#### Example Request:
+### 1. Hash a String
+
+#### Endpoint
 ```
-GET /hash/mytext
+GET /hash/<string:text>
 ```
 
-#### Example Response:
+#### Description
+This endpoint returns the SHA-1 hash of the received string.
+
+#### Request
+- Method: `GET`
+- URL Parameters:
+  - `text` (string): The input string to be hashed.
+
+#### Response
 ```json
 {
-  "original_string": "mytext",
-  "hashed_string": "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3"
+  "original_string": "input_string",
+  "hashed_string": "hashed_output"
 }
 ```
 
----
+### 2. Salt a String
 
-### `/salt/<string:text>` (GET)
-This endpoint takes a text value in the URL path, salts the string, and returns the result.
-
-#### Example Request:
+#### Endpoint
 ```
-GET /salt/mytext
+GET /salt/<string:text>
 ```
 
-#### Example Response:
+#### Description
+This endpoint salts the received string and returns the salted string.
+
+#### Request
+- Method: `GET`
+- URL Parameters:
+  - `text` (string): The input string to be salted.
+
+#### Response
 ```json
 {
-  "original_string": "mytext",
-  "salted_string": "mytext_SALT"
+  "original_string": "input_string",
+  "salted_string": "@()HB12$_salted_input_$@L73D"
 }
 ```
 
----
+### 3. Check for Password Breaches
 
-### `/breaches/<string:text>` (GET)
-This endpoint takes a text value in the URL path and checks if it exists in the "rockyou.txt" file, indicating a potential security breach.
-
-#### Example Request:
+#### Endpoint
 ```
-GET /breaches/password123
+GET /breaches/<string:text>
 ```
 
-#### Example Response (if found in the file):
+#### Description
+This endpoint checks if the received string has been compromised in common password breaches. It performs several checks, including common passwords, uppercase and lowercase letters, digits, special characters, and minimum length.
+
+#### Request
+- Method: `GET`
+- URL Parameters:
+  - `text` (string): The password to be checked for breaches.
+
+#### Response
 ```json
 {
-  "checked_string": "password123",
-  "breach_status": "unsafe"
+  "checked_string": "input_password",
+  "breach_status": "safe/unsafe",
+  "potential_issues": ["Issue 1", "Issue 2", ...]
 }
 ```
 
-#### Example Response (if not found in the file):
+### 4. Check HIBP (Have I Been Pwned) for Password Breaches
+
+#### Endpoint
+```
+GET /check_hibp/<string:text>
+```
+
+#### Description
+This endpoint checks if the received password has been breached using the Have I Been Pwned (HIBP) API. It salts the password using SHA-1 and queries the HIBP API to determine if the password has been compromised.
+
+#### Request
+- Method: `GET`
+- URL Parameters:
+  - `text` (string): The password to be checked for breaches.
+
+#### Response
 ```json
 {
-  "checked_string": "securepassword",
-  "breach_status": "safe"
+  "checked_string": "input_password",
+  "hibp_status": "safe/unsafe/error",
+  "message": "The password is not found in breaches./The password has been breached n times./Error connecting to HIBP API."
 }
 ```
